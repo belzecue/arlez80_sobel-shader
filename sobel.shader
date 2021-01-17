@@ -10,6 +10,10 @@ render_mode unshaded, blend_disabled;
 
 const vec3 MONOCHROME_SCALE = vec3( 0.298912, 0.586611, 0.114478 );
 
+uniform vec4 edge_color : hint_color = vec4( 1.0, 1.0, 1.0, 1.0 );
+uniform vec4 background_color : hint_color = vec4( 0.0, 0.0, 0.0, 1.0 );
+uniform float alpha : hint_range( 0.0, 1.0 ) = 1.0;
+
 float gaussian5x5( sampler2D tex, vec2 uv, vec2 pix_size )
 {
 	float p = 0.0;
@@ -56,5 +60,5 @@ void fragment( )
 	);
 	float sobel = clamp( sqrt( dot( sobel_src, sobel_src ) ), 0.0, 1.0 );
 
-	COLOR = vec4( sobel, sobel, sobel, 1.0 );
+	COLOR = vec4( mix( background_color.rgb, edge_color.rgb, sobel ), clamp( sobel + alpha, 0.0, 1.0 ) );
 }
